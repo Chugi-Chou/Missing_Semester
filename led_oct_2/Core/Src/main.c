@@ -116,6 +116,13 @@ int main(void)
       else HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_RESET);
     }
 
+    if (ticks % 20000 <= 300 && ticks % 20000 > 0) {
+      HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_SET);
+    }
+    else {
+      HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_RESET);
+    }
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
