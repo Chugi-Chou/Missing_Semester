@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include<math.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -90,20 +90,18 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM1_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim1);
+  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if (__HAL_TIM_GetCounter(&htim1) > __HAL_TIM_GET_AUTORELOAD(&htim1) / 2) {
-      HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_SET);
-    } else {
-      HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_RESET);
-    }
-
+    uint32_t arr_value = __HAL_TIM_GET_COUNTER(&htim5);
+    uint32_t brightness = arr_value * sinf(4 * HAL_GetTick() / 1000.f) - 1;
+    __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_3, brightness);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
