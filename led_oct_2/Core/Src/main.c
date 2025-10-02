@@ -93,8 +93,10 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM5_Init();
   MX_IWDG_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_3);
+  HAL_TIM_Base_Start(&htim1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -105,7 +107,7 @@ int main(void)
     uint32_t brightness = arr_value * sinf(4 * HAL_GetTick() / 1000.f) - 1;
     __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_3, brightness);
 
-    if (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_RESET) {
+    if (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET) {
       HAL_IWDG_Refresh(&hiwdg);
     }
     /* USER CODE END WHILE */
