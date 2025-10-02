@@ -96,7 +96,7 @@ int main(void)
   MX_TIM4_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_UART_Receive_IT(&huart1, rx_msg, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -104,12 +104,7 @@ int main(void)
   while (1)
   {
     HAL_UART_Transmit(&huart1, tx_msg, 10, 1000);
-    HAL_UART_Receive(&huart1, rx_msg, 10, 500);
-
-    if (rx_msg[0] == '1') {
-      HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-      rx_msg[0] = 0;
-    }
+    HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
