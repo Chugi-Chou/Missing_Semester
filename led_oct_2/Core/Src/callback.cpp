@@ -6,16 +6,11 @@
 #include "gpio.h"
 #include "usart.h"
 
-extern uint8_t rx_msg[4];
+extern uint8_t rx_byte;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart4) {
-        if (rxmsg[0] == 'R') {
-            HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-        }
-        else if (rxmsg[0] == 'M') {
-            HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_SET);
-        }
-        HAL_UART_Receive_IT(&huart4, rx_msg, 1);
+    if (huart->Instance == &huart4) {
+        ring_buffer_push(&rx_buf, rx_byte)
+        HAL_UART_Receive_IT(&huart4, &rx_byte, 1);
     }
 }

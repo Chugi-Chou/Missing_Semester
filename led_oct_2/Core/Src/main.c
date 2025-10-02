@@ -35,7 +35,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define RX_BUFFER_SIZE 256
+#define TX_BUFFER_SIZE 256
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -46,7 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint8_t rx_msg[4];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,7 +58,39 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+typedef struct {
+  uint8_t data[RX_BUFFER_SIZE];
+  uint16_t head;
+  uint16_t tail;
+  uint16_t count;
+} ring_buffer_t;
 
+ring_buffer_t rx_msg[RX_BUFFER_SIZE];
+
+uint8_t rx_byte;
+
+void ring_buffer_push(ring_buffer_t *buf, uint8_t data) {
+  if (buf->count == RX_BUFFER_SIZE) {
+    buf->data[buf->head] = data;
+    buf->head = (buf->head + 1) % RX_BUFFER_SIZE;
+    buf->count ++;
+  }
+  else {}
+}
+
+uint8_t ring_buffer_pop(ring_buffer_t *buf) {
+  uint8_t data = 0;
+  if (buf->count > 0) {
+    data = buf->data[buf->tail];
+    buf->tail = (buf->tail + 1) % RX_BUFFER_SIZE;
+    buf->count --;
+  }
+  return data;
+}
+
+uint16_t ring_buffer_available(ring_buffer_t *buf) {
+  return buf->count;
+}
 /* USER CODE END 0 */
 
 /**
@@ -95,13 +128,17 @@ int main(void)
   MX_TIM4_Init();
   MX_UART4_Init();
   /* USER CODE BEGIN 2 */
-  HAL_UART_Receive_IT(&huart4, rx_msg, 1);
+  HAL_UART_Receive_IT(&huart4, &rx_byte, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    while (ring_buffer_available(&rx_msg[0]) != 0) {
+      uint8_t data = ring_buffer_pop(&rx_msg[0]);
+      HAL_UART_Transmit(&huart4, &data, 1, 1000);
+    };
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
