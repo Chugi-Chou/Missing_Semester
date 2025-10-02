@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "iwdg.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -91,6 +92,7 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM1_Init();
   MX_TIM5_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_3);
   /* USER CODE END 2 */
@@ -102,6 +104,10 @@ int main(void)
     uint32_t arr_value = __HAL_TIM_GET_COUNTER(&htim5);
     uint32_t brightness = arr_value * sinf(4 * HAL_GetTick() / 1000.f) - 1;
     __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_3, brightness);
+
+    if (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_RESET) {
+      HAL_IWDG_Refresh(&hiwdg);
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -126,8 +132,9 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 8;
