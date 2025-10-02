@@ -9,5 +9,5 @@
 uint32_t count;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-    if (htim == &htim1) count ++;
+
 }
