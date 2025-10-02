@@ -6,6 +6,7 @@
 "led_oct_2\tim.o"
 "led_oct_2\stm32f4xx_it.o"
 "led_oct_2\stm32f4xx_hal_msp.o"
+"led_oct_2\callback.o"
 "led_oct_2\stm32f4xx_hal_iwdg.o"
 "led_oct_2\stm32f4xx_hal_rcc.o"
 "led_oct_2\stm32f4xx_hal_rcc_ex.o"
@@ -23,7 +24,7 @@
 "led_oct_2\stm32f4xx_hal_tim.o"
 "led_oct_2\stm32f4xx_hal_tim_ex.o"
 "led_oct_2\system_stm32f4xx.o"
---library_type=microlib --strict --scatter "led_oct_2\led_oct_2.sct"
+--strict --scatter "led_oct_2\led_oct_2.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "led_oct_2.map" -o led_oct_2\led_oct_2.axf
