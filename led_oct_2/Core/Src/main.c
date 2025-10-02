@@ -20,6 +20,7 @@
 #include "main.h"
 #include "iwdg.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -92,21 +93,19 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM1_Init();
   MX_TIM5_Init();
+  MX_IWDG_Init();
   MX_TIM4_Init();
+  MX_UART4_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_3);
-  HAL_TIM_Base_Start_IT(&htim1);
+  uint8_t tx_msg[] = "RoboMaster";
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    uint32_t arr_value = __HAL_TIM_GET_COUNTER(&htim5);
-    uint32_t brightness = arr_value * sinf(4 * HAL_GetTick() / 1000.f) - 1;
-    __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_3, brightness);
-
-
+    HAL_UART_Transmit(&huart4, tx_msg, 10, 1000);
+    HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
